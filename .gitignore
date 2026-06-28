@@ -1,0 +1,36 @@
+# ---------- .NET ----------
+bin/
+obj/
+out/
+[Dd]ebug/
+[Rr]elease/
+*.user
+*.suo
+*.userosscache
+*.dbmdl
+project.lock.json
+artifacts/
+
+# Visual Studio / Rider / VS Code
+.vs/
+.vscode/
+.idea/
+*.swp
+
+# ---------- Secrets / env ----------
+# Never commit real secrets. JWT key lives in user-secrets / env vars.
+appsettings.*.local.json
+*.pfx
+*.key
+
+# ---------- Angular / Node ----------
+node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/coverage/
+npm-debug.log*
+yarn-error.log*
+
+# ---------- OS ----------
+Thumbs.db
+.DS_Store
