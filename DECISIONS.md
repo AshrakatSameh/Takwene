@@ -8,11 +8,11 @@
 
 **AI generated (under my direction):**
 - The Clean Architecture project layout and most boilerplate: entity classes, EF Core `IEntityTypeConfiguration` classes, the `DbContext`, DTOs, FluentValidation validators, the service implementations, controllers, JWT wiring, the global exception middleware, and the Angular components/services.
-- The Angular UI styling, adapted from an existing in-house React app's design language (deep-blue sidebar, status pills, card layout) reimplemented with Tailwind in Angular.
+- Assisted in The Angular UI styling, with Tailwind in Angular.
 
 **I decided / wrote / modified myself:**
 - **Architecture & stack choices:** I chose PostgreSQL over SQLite, .NET 8 LTS, Angular 17, and how the layers depend on each other.
-- Created the application architecture design.
+- Designed the Clean Architecture project structure and defined dependencies between Domain, Application, Infrastructure, and API layers.
 - **Edited Models & DTOs** — I modified some of the models and DTOs the AI generated (including using `int` keys instead of the AI's suggested `Guid`).
 - **Authentication approach:** I rejected the AI's first idea of storing demo credentials in `appsettings.json` and instead required a proper **`User` entity with a BCrypt-hashed password**, seeded at startup.
 - **Access model:** I decided the **entire Angular app should sit behind login** — an auth route guard redirects unauthenticated users to a login screen, and a JWT HTTP interceptor attaches the token to every API call.
