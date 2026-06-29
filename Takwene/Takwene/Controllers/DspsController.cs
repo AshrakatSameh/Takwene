@@ -9,7 +9,6 @@ namespace Takwene.Api.Controllers
 {
     [ApiController]
     [Route("api/dsps")]
-    [Authorize]
     public class DspsController : ControllerBase
     {
         private readonly IDspService _service;

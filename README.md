@@ -112,10 +112,10 @@ Response:
 |---|---|---|---|
 | POST | `/api/auth/login` | — | Obtain a JWT |
 | POST | `/api/artists` | 🔒 | Create an artist |
-| GET | `/api/artists` | — | List all artists |
+| GET | `/api/artists` | 🔒 | List all artists |
 | POST | `/api/tracks` | 🔒 | Create a track for an artist |
-| GET | `/api/tracks?artistId=&genre=&status=` | — | List tracks with filters |
-| GET | `/api/tracks/{id}` | — | Track details incl. DSP distribution statuses |
+| GET | `/api/tracks?artistId=&genre=&status=` | 🔒 | List tracks with filters |
+| GET | `/api/tracks/{id}` | 🔒 | Track details incl. DSP distribution statuses |
 | POST | `/api/tracks/{id}/distribute` | 🔒 | Submit a track to one or more DSPs |
 | PATCH | `/api/tracks/{id}/status` | 🔒 | Update a track's status |
 | GET | `/api/dsps` | — | List DSPs (used by the distribute screen) |
