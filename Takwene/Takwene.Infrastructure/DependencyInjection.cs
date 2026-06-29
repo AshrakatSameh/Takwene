@@ -22,6 +22,7 @@ namespace Takwene.Infrastructure
             services.AddScoped<IArtistService, ArtistService>();
             services.AddScoped<ITrackService, TrackService>();
             services.AddScoped<IJwtTokenService, JwtTokenService>();
+            services.AddScoped<IAuthService, AuthService>();
 
             // Registers every AbstractValidator<T> in the Application assembly.
             services.AddValidatorsFromAssemblyContaining<CreateArtistRequestValidator>();

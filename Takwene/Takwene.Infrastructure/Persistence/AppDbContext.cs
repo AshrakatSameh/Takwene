@@ -11,6 +11,7 @@ namespace Takwene.Infrastructure.Persistence
         public DbSet<Track> Tracks => Set<Track>();
         public DbSet<Dsp> Dsps => Set<Dsp>();
         public DbSet<TrackDistribution> TrackDistributions => Set<TrackDistribution>();
+        public DbSet<User> Users => Set<User>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
