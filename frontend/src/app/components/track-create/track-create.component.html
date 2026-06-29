@@ -1,0 +1,92 @@
+<div class="max-w-2xl mx-auto p-6 lg:p-8">
+  <a
+    routerLink="/tracks"
+    class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-brand transition-colors mb-6"
+  >
+    <lucide-angular [img]="ArrowLeft" class="w-4 h-4"></lucide-angular>
+    Back to tracks
+  </a>
+
+  <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+    <div class="flex items-center gap-3 mb-6">
+      <div class="w-11 h-11 rounded-2xl bg-brand flex items-center justify-center shadow-lg shadow-brand/20">
+        <lucide-angular [img]="Disc3" class="w-5 h-5 text-white"></lucide-angular>
+      </div>
+      <h1 class="text-xl font-bold text-gray-900">New Track</h1>
+    </div>
+
+    <div *ngIf="errors.length" class="mb-4 p-3 rounded-lg bg-red-50 border border-red-200">
+      <p *ngFor="let e of errors" class="text-sm text-red-700">{{ e }}</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+        <input
+          type="text"
+          formControlName="title"
+          class="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 outline-none focus:border-brand/40 focus:ring-2 focus:ring-brand/10 transition-all"
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Artist</label>
+        <select
+          formControlName="artistId"
+          class="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 bg-white outline-none focus:border-brand/40 focus:ring-2 focus:ring-brand/10 transition-all"
+        >
+          <option [ngValue]="null" disabled>Select an artist…</option>
+          <option *ngFor="let a of artists" [ngValue]="a.id">{{ a.name }}</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">ISRC</label>
+          <input
+            type="text"
+            formControlName="isrc"
+            placeholder="e.g. USRC17607839"
+            class="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 outline-none focus:border-brand/40 focus:ring-2 focus:ring-brand/10 transition-all"
+          />
+          <p
+            *ngIf="form.controls.isrc.touched && form.controls.isrc.invalid"
+            class="text-xs text-red-600 mt-1"
+          >
+            ISRC must be exactly 12 alphanumeric characters.
+          </p>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Release date</label>
+          <input
+            type="date"
+            formControlName="releaseDate"
+            class="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 outline-none focus:border-brand/40 focus:ring-2 focus:ring-brand/10 transition-all"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Genre</label>
+        <input
+          type="text"
+          formControlName="genre"
+          placeholder="e.g. Pop"
+          class="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 outline-none focus:border-brand/40 focus:ring-2 focus:ring-brand/10 transition-all"
+        />
+      </div>
+
+      <div class="flex items-center gap-3 pt-2">
+        <button
+          type="submit"
+          [disabled]="submitting"
+          class="bg-brand hover:bg-brand-dark text-white font-medium px-5 py-2.5 rounded-lg transition-colors disabled:opacity-50"
+        >
+          {{ submitting ? 'Saving…' : 'Create track' }}
+        </button>
+        <a routerLink="/tracks" class="text-sm text-gray-500 hover:text-gray-700">Cancel</a>
+      </div>
+      <p class="text-xs text-gray-400">New tracks start as <strong>Draft</strong>.</p>
+    </form>
+  </div>
+</div>

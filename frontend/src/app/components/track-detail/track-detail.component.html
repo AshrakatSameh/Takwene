@@ -1,0 +1,161 @@
+<div class="max-w-4xl mx-auto p-6 lg:p-8">
+  <!-- Back link -->
+  <a
+    routerLink="/tracks"
+    class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-brand transition-colors mb-6"
+  >
+    <lucide-angular [img]="ArrowLeft" class="w-4 h-4"></lucide-angular>
+    Back to tracks
+  </a>
+
+  <!-- Loading / error -->
+  <div *ngIf="loading" class="text-center text-gray-400 text-sm py-16">Loading…</div>
+  <div *ngIf="error && !loading" class="text-center text-red-600 text-sm py-16">{{ error }}</div>
+
+  <ng-container *ngIf="track && !loading">
+    <!-- Track info card -->
+    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 mb-6">
+      <div class="flex items-start gap-4">
+        <div
+          class="w-14 h-14 rounded-2xl bg-brand flex items-center justify-center shadow-lg shadow-brand/20 shrink-0"
+        >
+          <lucide-angular [img]="Disc3" class="w-7 h-7 text-white"></lucide-angular>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-3 flex-wrap">
+            <h1 class="text-2xl font-bold text-gray-900">{{ track.title }}</h1>
+            <span
+              [class]="'inline-block text-xs px-2.5 py-1 rounded-full border font-medium ' + trackStatusClass(track.status)"
+            >
+              {{ track.status }}
+            </span>
+          </div>
+          <p class="text-gray-500 mt-1">{{ track.artistName }}</p>
+        </div>
+      </div>
+
+      <!-- Meta grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6">
+        <div class="p-4 rounded-xl bg-gray-50">
+          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Genre</p>
+          <p class="text-sm font-medium text-gray-900 mt-1">{{ track.genre }}</p>
+        </div>
+        <div class="p-4 rounded-xl bg-gray-50">
+          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">ISRC</p>
+          <p class="text-sm font-medium text-gray-900 mt-1">{{ track.isrc }}</p>
+        </div>
+        <div class="p-4 rounded-xl bg-gray-50">
+          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Release date</p>
+          <p class="text-sm font-medium text-gray-900 mt-1">{{ track.releaseDate | date: 'mediumDate' }}</p>
+        </div>
+        <div class="p-4 rounded-xl bg-gray-50">
+          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Artist ID</p>
+          <p class="text-sm font-medium text-gray-900 mt-1">#{{ track.artistId }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action feedback -->
+    <div *ngIf="actionErrors.length" class="mb-4 p-3 rounded-lg bg-red-50 border border-red-200">
+      <p *ngFor="let e of actionErrors" class="text-sm text-red-700">{{ e }}</p>
+    </div>
+    <div *ngIf="actionMessage" class="mb-4 p-3 rounded-lg bg-green-50 border border-green-200">
+      <p class="text-sm text-green-700">{{ actionMessage }}</p>
+    </div>
+
+    <!-- Management (authenticated only) -->
+    <div *ngIf="isAuthenticated()" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <!-- Distribute -->
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+        <div class="flex items-center gap-2 mb-4">
+          <lucide-angular [img]="Send" class="w-5 h-5 text-brand"></lucide-angular>
+          <h2 class="font-semibold text-gray-900">Distribute to DSPs</h2>
+        </div>
+        <div class="space-y-2">
+          <label
+            *ngFor="let d of dsps"
+            class="flex items-center gap-3 px-3 py-2 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50"
+          >
+            <input
+              type="checkbox"
+              [checked]="selectedDspIds.has(d.id)"
+              (change)="toggleDsp(d.id)"
+              class="accent-brand w-4 h-4"
+            />
+            <span class="text-sm text-gray-700">{{ d.name }}</span>
+          </label>
+        </div>
+        <button
+          (click)="distribute()"
+          [disabled]="working || selectedDspIds.size === 0"
+          class="mt-4 w-full bg-brand hover:bg-brand-dark text-white font-medium py-2.5 rounded-lg transition-colors disabled:opacity-50"
+        >
+          Distribute ({{ selectedDspIds.size }})
+        </button>
+      </div>
+
+      <!-- Update status -->
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+        <div class="flex items-center gap-2 mb-4">
+          <lucide-angular [img]="RefreshCw" class="w-5 h-5 text-brand"></lucide-angular>
+          <h2 class="font-semibold text-gray-900">Update status</h2>
+        </div>
+        <select
+          [(ngModel)]="statusValue"
+          class="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 bg-white outline-none focus:border-brand/40 focus:ring-2 focus:ring-brand/10 transition-all"
+        >
+          <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+        </select>
+        <button
+          (click)="updateStatus()"
+          [disabled]="working"
+          class="mt-4 w-full bg-brand hover:bg-brand-dark text-white font-medium py-2.5 rounded-lg transition-colors disabled:opacity-50"
+        >
+          Update status
+        </button>
+      </div>
+    </div>
+
+    <!-- Login hint -->
+    <div
+      *ngIf="!isAuthenticated()"
+      class="mb-6 p-4 rounded-xl bg-brand/5 border border-brand/20 text-sm text-gray-600"
+    >
+      <a routerLink="/login" class="text-brand font-medium">Log in</a>
+      to distribute this track or change its status.
+    </div>
+
+    <!-- Distributions -->
+    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+      <div class="flex items-center gap-2 px-6 py-4 border-b border-gray-100">
+        <lucide-angular [img]="Radio" class="w-5 h-5 text-brand"></lucide-angular>
+        <h2 class="font-semibold text-gray-900">DSP Distributions</h2>
+        <span class="text-xs text-gray-400">({{ track.distributions.length }})</span>
+      </div>
+
+      <div *ngIf="track.distributions.length === 0" class="px-6 py-10 text-center text-gray-400 text-sm">
+        This track hasn't been distributed to any DSP yet.
+      </div>
+
+      <div
+        *ngFor="let d of track.distributions"
+        class="flex items-center justify-between px-6 py-4 border-b border-gray-50 last:border-0"
+      >
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-brand/10 flex items-center justify-center">
+            <lucide-angular [img]="Radio" class="w-4 h-4 text-brand"></lucide-angular>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-gray-900">{{ d.dspName }}</p>
+            <p class="text-xs text-gray-400">Submitted {{ d.submittedAt | date: 'medium' }}</p>
+          </div>
+        </div>
+        <span
+          [class]="'inline-block text-xs px-2.5 py-1 rounded-full border font-medium ' + distStatusClass(d.status)"
+        >
+          {{ d.status }}
+        </span>
+      </div>
+    </div>
+  </ng-container>
+</div>

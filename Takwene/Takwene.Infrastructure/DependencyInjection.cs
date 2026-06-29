@@ -21,6 +21,7 @@ namespace Takwene.Infrastructure
 
             services.AddScoped<IArtistService, ArtistService>();
             services.AddScoped<ITrackService, TrackService>();
+            services.AddScoped<IDspService, DspService>();
             services.AddScoped<IJwtTokenService, JwtTokenService>();
             services.AddScoped<IAuthService, AuthService>();
 
