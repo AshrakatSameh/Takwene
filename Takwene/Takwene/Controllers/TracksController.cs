@@ -10,6 +10,7 @@ namespace Takwene.Api.Controllers
 {
     [ApiController]
     [Route("api/tracks")]
+    [Authorize]
     public class TracksController : ControllerBase
     {
         private readonly ITrackService _service;
@@ -20,7 +21,7 @@ namespace Takwene.Api.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+       // [Authorize]
         public async Task<ActionResult<TrackDetailDto>> Create(CreateTrackRequest request)
         {
             var track = await _service.CreateAsync(request);
@@ -45,14 +46,12 @@ namespace Takwene.Api.Controllers
         }
 
         [HttpPost("{id:int}/distribute")]
-        [Authorize]
         public async Task<ActionResult<TrackDetailDto>> Distribute(int id, DistributeRequest request)
         {
             return Ok(await _service.DistributeAsync(id, request));
         }
 
         [HttpPatch("{id:int}/status")]
-        [Authorize]
         public async Task<ActionResult<TrackDetailDto>> UpdateStatus(int id, UpdateTrackStatusRequest request)
         {
             return Ok(await _service.UpdateStatusAsync(id, request));

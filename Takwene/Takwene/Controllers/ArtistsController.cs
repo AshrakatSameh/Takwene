@@ -9,6 +9,7 @@ namespace Takwene.Api.Controllers
 {
     [ApiController]
     [Route("api/artists")]
+    [Authorize]
     public class ArtistsController : ControllerBase
     {
         private readonly IArtistService _service;
@@ -19,7 +20,7 @@ namespace Takwene.Api.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        
         public async Task<ActionResult<ArtistDto>> Create(CreateArtistRequest request)
         {
             var artist = await _service.CreateAsync(request);

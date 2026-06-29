@@ -1,6 +1,6 @@
 # Takwene — Track Management API + Angular UI
 
-A small music-distribution platform: a **.NET 8 Web API** (Clean Architecture, EF Core + PostgreSQL, JWT) that manages artists, tracks, and their distribution to DSPs (Spotify, Apple Music, YouTube), plus an **Angular 17** single-page UI to browse tracks and their distribution statuses.
+A small music-distribution platform: a **.NET 8 Web API** (Clean Architecture, EF Core + PostgreSQL, JWT) that manages artists, tracks, and their distribution to DSPs (Spotify, Apple Music, YouTube), plus a **login-gated Angular 17** single-page UI to browse and manage tracks, artists, and their DSP distributions.
 
 ---
 
@@ -78,8 +78,8 @@ dotnet run --project Takwene
 ```
 
 - The API also **applies migrations and seeds the demo admin user automatically on startup**.
-- Swagger UI: **http://localhost:5022/swagger**
-- Base URL: `http://localhost:5022/api`
+- Swagger UI: **https://localhost:7176/swagger**
+- Base URL: `https://localhost:7176/api`
 
 ---
 
@@ -91,7 +91,7 @@ Mutating endpoints (`POST`/`PATCH`) are protected with `[Authorize]`. To call th
 (The password is stored only as a **BCrypt hash** — never in plaintext. Override with user-secrets `SeedAdmin:Username` / `SeedAdmin:Password` if desired.)
 
 ```bash
-curl -X POST http://localhost:5022/api/auth/login \
+curl -X POST https://localhost:7176/api/auth/login \
   -H "Content-Type: application/json" \
   -d "{\"username\":\"admin\",\"password\":\"Admin123!\"}"
 ```
@@ -118,6 +118,7 @@ Response:
 | GET | `/api/tracks/{id}` | — | Track details incl. DSP distribution statuses |
 | POST | `/api/tracks/{id}/distribute` | 🔒 | Submit a track to one or more DSPs |
 | PATCH | `/api/tracks/{id}/status` | 🔒 | Update a track's status |
+| GET | `/api/dsps` | — | List DSPs (used by the distribute screen) |
 
 🔒 = requires `Authorization: Bearer <token>`
 
@@ -132,11 +133,19 @@ npm install
 npm start
 ```
 
-Open **http://localhost:4200**. The dev server expects the API at `http://localhost:5022/api` (configured in `src/environments/environment.ts`; CORS for `http://localhost:4200` is enabled in the API).
+Open **http://localhost:4200**. The dev server expects the API at `https://localhost:7176/api` (configured in `src/environments/environment.ts`; CORS for `http://localhost:4200` is enabled in the API).
 
-**Views:**
-- **Track List** — all tracks with artist, genre, and status; filter by status.
-- **Track Detail** — click a track to see full info and which DSPs it's distributed to (with statuses).
+> Because the frontend calls the API over HTTPS, trust the .NET dev certificate once so the browser accepts it:
+> ```bash
+> dotnet dev-certs https --trust
+> ```
+
+**The whole app is behind login.** Opening any page redirects to a **login screen** until you authenticate (demo: `admin` / `Admin123!`). The JWT is then stored and automatically attached to every API request.
+
+**Views (after login):**
+- **Track List** — all tracks with artist, genre, and status; filter by status; "New Track" action.
+- **Track Detail** — full track info, its DSP distributions (with statuses), plus **distribute to DSPs** and **change status** actions.
+- **Artists** — list all artists and create a new artist.
 
 ---
 
